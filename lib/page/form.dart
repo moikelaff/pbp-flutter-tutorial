@@ -1,5 +1,7 @@
 import 'package:pbp_flutter/main.dart';
 import 'package:flutter/material.dart';
+import 'package:pbp_flutter/page/todo_page.dart';
+
 
 class MyFormPage extends StatefulWidget {
   const MyFormPage({super.key});
@@ -20,34 +22,65 @@ class _MyFormPageState extends State<MyFormPage> {
   List<String> listKelasPBP = ['A', 'B', 'C', 'D', 'E', 'F', 'KI'];
   bool _nilaiSwitch = false;
 
+  String getJenjang() {
+    String jenjang = jenjangDiploma
+        ? 'Diploma'
+        : jenjangSarjana == true
+            ? 'Sarjana'
+            : jenjangMagister
+                ? 'Magister'
+                : jenjangDoktor
+                    ? 'Doktor'
+                    : 'Tidak terdefinisi';
+    return jenjang;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Form'),
       ),
+
+      // Menambahkan drawer menu
       drawer: Drawer(
-        child: Column(children: [
-          ListTile(
-            title: const Text('Counter'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
-              );
-            },
-          ),
-          ListTile(
-            title: const Text('Form'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MyFormPage()),
-              );
-            },
-          ),
-        ]),
+        child: Column(
+          children: [
+            // Menambahkan clickable menu
+            ListTile(
+              title: const Text('Counter'),
+              onTap: () {
+                // Route menu ke halaman utama
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Form'),
+              onTap: () {
+                // Route menu ke halaman form
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyFormPage()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('To Do'),
+              onTap: () {
+                  // Route menu ke halaman to do
+                  Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const todoPage()),
+                  );
+              },
+            ),
+          ],
+        ),
       ),
+
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -209,53 +242,65 @@ class _MyFormPageState extends State<MyFormPage> {
                   secondary: const Icon(Icons.run_circle_outlined),
                 ),
                 TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 15,
-                            child: Container(
-                              child: ListView(
-                                padding:
-                                    const EdgeInsets.only(top: 20, bottom: 20),
-                                shrinkWrap: true,
-                                children: <Widget>[
-                                  const Center(child: Text('Informasi Data')),
-                                  SizedBox(height: 20),
-                                  // TODO: Munculkan informasi yang didapat dari form
-                                  Center(child: Text("Nama Lengkap: $_namaLengkap")),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Kembali'),
-                                  ),
-                                ],
+                    child: const Text(
+                      "Simpan",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  },
-                  child: const Text(
-                    "Simpan",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                              elevation: 15,
+                              child: Container(
+                                child: ListView(
+                                  padding: const EdgeInsets.only(
+                                      top: 20, bottom: 20),
+                                  shrinkWrap: true,
+                                  children: <Widget>[
+                                    Center(child: const Text('Informasi Data')),
+                                    SizedBox(height: 20),
+                                    // TODO: Munculkan informasi yang didapat dari form
+                                    Text('Nama: $_namaLengkap\n'
+                                        'Jenjang: ' +  getJenjang() + '\n'
+                                        'Umur: $umur\n'
+                                        'Kelas PBP: $kelasPBP\n'
+                                        'Practice mode: $_nilaiSwitch\n '),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Kembali'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    }),
               ],
             ),
           ),
         ),
       ),
+
+      // body: Center(
+      //     child: Column(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: <Widget>[
+      //             Text('Hello World!'),
+      //         ],
+      //     ),
+      // ),
     );
   }
 }
